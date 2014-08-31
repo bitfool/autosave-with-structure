@@ -17,7 +17,7 @@
         clearTimeout(timer);
         var $context = $this.val();
         var hasStructure = checkStructure($context);
-        if(hasStructure) {
+        if(hasStructure === true) {
           if(localStorage) {
             localStorage.setItem(savename, $context);
             wasSaved = true;
@@ -25,7 +25,7 @@
           }
         } else {
           wasSaved = false;
-          structuremsg = "bad structure";
+          structuremsg = hasStructure;
         }
         timer = setTimeout(function() {
           callback(wasSaved,structuremsg);
@@ -35,7 +35,10 @@
         var truthy = false,
           restr = "";
         for(var i=0;i<headers.length;i++){
-          restr += headers[i] + '([\\s\\S]*)';
+          var type = Object.getOwnPropertyNames(headers[i])[0];
+          if( type == "h"){  //type h: simple headers separating text sections
+            restr += headers[i].h + '([\\s\\S]*)';
+          }
         } 
         var re = new RegExp(restr,'mgi');
         var structure = txt.match(re);
