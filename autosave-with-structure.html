@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="autosave-with-structure">
+    <meta name="author" content="bitfool">
+    <title>autosave-with-structure</title>
+ </head>
+
+  <body>
+    <div id="wrap">
+      <div class="container">
+       <div class="page-header">
+        <h1>autosave-with-structure</h1>
+       </div>
+       <div class="row">
+        <div id="msg" class="msgbox"></div>
+       </div>
+       <div class="row">
+        <div class="writing">
+          <textarea id="autosavewithstructure" class="form-control" placeholder="Type something here..." rows="6" cols="60">
+<<<Introduction>>>
+hello my name is inigo montoya.
+          
+<<<The Good Stuff>>>
+you keeled my fodder. prepare to die.
+
+          </textarea>
+        </div>
+       </div>
+       <div class="row">
+        <div class="buttonsholder">
+         <button id="refresh" class="button">Refresh</button>
+         <button id="erase" class="button">Erase All</button>
+       </div>
+      </div>
+
+    <script src="jquery.min.js"></script>
+    <script src="autosave-with-structure.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        var asws = $("#autosavewithstructure");
+        asws.savename = "savedwithstructure";
+        if (localStorage) {
+          var content = localStorage.getItem("savedwithstructure");
+          if (content) {
+              asws.text(content);
+          }
+        }
+
+        asws.headers = Array("(<<<Introduction>>>)","(<<<The Good Stuff>>>)");
+        asws.autosaveit(function(saved,message) {
+          console.log(saved,message);
+          var time = showtime();
+          $(".msgbox").empty().append($('<div class="msgholder"><span class="savemsg"></span></div>'));
+          if(saved){
+            $(".savemsg").text("Draft Autosaved " + time);
+          } else {
+            $(".savemsg").text("Failed to save: " + message + ".  Press 'Refresh' to recover last saved.");
+          }
+        }, 500, asws.savename, asws.headers);
+
+        $("#refresh").click(function() {
+          location.reload(true);
+        });
+
+        $("#erase").click(function() {
+          localStorage.clear();
+          location.reload(true);
+        });
+
+        function showtime() {
+          var timeNow = new Date();
+          var hours = timeNow.getHours();
+          var minutes = timeNow.getMinutes();
+          var seconds = timeNow.getSeconds();
+          var timeString = "" + ((hours > 12) ? hours - 12 : hours);
+          timeString += ((minutes < 10) ? ":0" : ":") + minutes;
+          timeString += ((seconds < 10) ? ":0" : ":") + seconds;
+          timeString += (hours >= 12) ? " P.M." : " A.M.";
+          return timeString;
+        }
+      });
+      
+    </script>
+  </body>
+</html>
