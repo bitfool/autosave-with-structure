@@ -5,7 +5,7 @@
   license: http://www.opensource.org/licenses/mit-license.php
 */
 (function($) {
-  $.fn.autosaveit = function(callback, ms, structure) {
+  $.fn.autosaveit = function(callback, ms, savename, structure) {
     return this.each(function() {
       var timer = 0,
         structuremsg = "well structured",
@@ -19,13 +19,13 @@
         var hasStructure = checkStructure($context);
         if(hasStructure) {
           if(localStorage) {
-            localStorage.setItem("savedwithstructure", $context);
+            localStorage.setItem(savename, $context);
             wasSaved = true;
             structuremsg = "well structured";
           }
         } else {
           wasSaved = false;
-          structuremsg = "broken structure";
+          structuremsg = "bad structure";
         }
         timer = setTimeout(function() {
           callback(wasSaved,structuremsg);
